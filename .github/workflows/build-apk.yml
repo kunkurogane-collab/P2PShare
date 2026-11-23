@@ -2,17 +2,16 @@ name: Build APK
 
 on:
   push:
-  pull_request:
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: P2PTransfer
     steps:
       - uses: actions/checkout@v4
+
+      - name: Ekstrak project dari zip
+        run: unzip -q P2PTransfer.zip
 
       - uses: actions/setup-java@v4
         with:
@@ -22,8 +21,10 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.9
+          build-root-directory: P2PTransfer
 
       - name: Build debug APK
+        working-directory: P2PTransfer
         run: gradle assembleDebug --stacktrace
 
       - uses: actions/upload-artifact@v4
